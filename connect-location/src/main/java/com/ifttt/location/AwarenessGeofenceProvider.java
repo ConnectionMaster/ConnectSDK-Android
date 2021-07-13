@@ -43,11 +43,13 @@ final class AwarenessGeofenceProvider implements GeofenceProvider {
     private final static int REQUEST_CODE_EXIT = 1002;
 
     private final FenceClient fenceClient;
+    private final BackupGeofenceMonitor monitor;
     private final PendingIntent enterPendingIntent;
     private final PendingIntent exitPendingIntent;
 
     AwarenessGeofenceProvider(Context context) {
         this.fenceClient = Awareness.getFenceClient(context);
+        this.monitor = BackupGeofenceMonitor.get(context);
 
         exitPendingIntent = PendingIntent.getBroadcast(context,
             REQUEST_CODE_EXIT,
@@ -64,7 +66,10 @@ final class AwarenessGeofenceProvider implements GeofenceProvider {
 
     @Override
     public void updateGeofences(final Connection connection, @Nullable LocationStatusCallback locationStatusCallback) {
+        monitor.updateMonitoredGeofences(connection.features);
+
         fenceClient.queryFences(FenceQueryRequest.all()).addOnSuccessListener(fenceQueryResponse -> {
+
             FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder();
             diffFences(connection.status,
                 connection.features,
@@ -73,9 +78,9 @@ final class AwarenessGeofenceProvider implements GeofenceProvider {
                 exitPendingIntent,
                 new DiffCallback() {
                     @Override
-                    public void onAddFence(String key, AwarenessFence value, PendingIntent pendingIntent) {
+                    public void onAddFence(String key, AwarenessFence fence, PendingIntent pendingIntent) {
                         Logger.log("Adding geo-fence: " + key);
-                        requestBuilder.addFence(key, value, pendingIntent);
+                        requestBuilder.addFence(key, fence, pendingIntent);
                     }
 
                     @Override
@@ -91,7 +96,6 @@ final class AwarenessGeofenceProvider implements GeofenceProvider {
                 if (locationStatusCallback == null) {
                     return;
                 }
-
 
                 boolean hasActiveGeofence = false;
                 for (String key : response.getFenceStateMap().getFenceKeys()) {
@@ -116,10 +120,12 @@ final class AwarenessGeofenceProvider implements GeofenceProvider {
                 locationStatusCallback.onLocationStatusUpdated(false);
             }
         });
+
+        monitor.clear();
     }
 
     interface DiffCallback {
-        void onAddFence(String key, AwarenessFence value, PendingIntent pendingIntent);
+        void onAddFence(String key, AwarenessFence fence, PendingIntent pendingIntent);
 
         void onRemoveFence(String key);
     }

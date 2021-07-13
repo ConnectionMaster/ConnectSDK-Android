@@ -2,7 +2,7 @@
 
 # IFTTT Connect Button SDK for Android
 
-[![Build Status](https://travis-ci.org/IFTTT/ConnectSDK-Android.svg?branch=master)](https://travis-ci.org/IFTTT/ConnectSDK-Android)
+![Build Status](https://github.com/IFTTT/ConnectSDK-Android/actions/workflows/ci.yml/badge.svg?branch=master)
 
 ### Connect API references
 [![javadoc](https://javadoc.io/badge2/com.ifttt/connect-api/javadoc.svg)](https://javadoc.io/doc/com.ifttt/connect-api)
@@ -42,9 +42,9 @@ This SDK uses the following libraries as dependencies:
 ### Gradle
 ```groovy
 // Required for Connect API integration.
-implementation "com.ifttt:connect-api:2.3.7
+implementation "com.ifttt:connect-api:2.4.3"
 // Connect Button UI.
-implementation "com.ifttt:connect-button:2.3.7"
+implementation "com.ifttt:connect-button:2.4.3"
 ```
 
 ## Usage
@@ -287,7 +287,7 @@ By default, the SDK will track user interactions when users interact with the Co
 You may call the `ConnectButton.disableTracking(context)` if you wish to opt-out from tracking. After this method is called, all tracking will be disabled for all of the ConnectButton instances within the app **for as long as it is in-memory**. If you want to persist the user's preference for disabling tracking, you should store the preference within your persistent storage, and call this method every time the app is started.
 
 ### Configuration skipping
-You can use `Configuration.Builder#skipConnectionConfiguration()` if you want to use your own connection configuration UI. Setting this parameter will instruct IFTTT to skip the connection configuration screen. Once a user clicks the connect button they will be taken through the usual connection flow however they will not see the connection configuration screen but will be redirected back to your app instead. After that you will be able to use the [field options endpoint](https://platform.ifttt.com/docs/connect_api#field-options) and the [update a connection endpoint](https://platform.ifttt.com/docs/connect_api#update-a-connection) to support your UI and allow the user to configure the connection. A user connection created with `skipConfig=true` is considered pending and will not fire it's triggers or allow you to run it's actions or queries until it's updated using the [update a connection endpoint](https://platform.ifttt.com/docs/connect_api#update-a-connection). This feature is available <a href="mailto:platform-support+via-docs-connection-api@ifttt.com" class="open_intercom_messenger">upon request</a>.
+You can use `Configuration.Builder#skipConnectionConfiguration()` if you want to use your own connection configuration UI. Setting this parameter will instruct IFTTT to skip the connection configuration screen. Once a user clicks the connect button they will be taken through the usual connection flow however they will not see the connection configuration screen but will be redirected back to your app instead. After that you will be able to use the [field options endpoint](https://platform.ifttt.com/docs/connect_api#field-options) and the [update a connection endpoint](https://platform.ifttt.com/docs/connect_api#update-a-connection) to support your UI and allow the user to configure the connection. A user connection created with `skipConfig=true` is considered pending and will not fire it's triggers or allow you to run it's actions or queries until it's updated using the [update a connection endpoint](https://platform.ifttt.com/docs/connect_api#update-a-connection).
 
 ### Localization
 The `ConnectButton` and the corresponding flow can display translated text.

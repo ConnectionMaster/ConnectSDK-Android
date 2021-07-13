@@ -23,7 +23,10 @@ public final class LocationEventUploader extends Worker {
     private static final String INPUT_DATA_EVENT_TYPE = "input_event_type";
     private static final String INPUT_DATA_STEP_ID = "input_step_id";
 
-    enum EventType {
+    /**
+     * Enum type representing the type of a geofence event, whether it is entering or exiting.
+     */
+    public enum EventType {
         Entry, Exit
     }
 
@@ -64,8 +67,9 @@ public final class LocationEventUploader extends Worker {
             if (!uploadResponse.isSuccessful()) {
                 Logger.error("Geo-fence event upload failed with status code: " + uploadResponse.code());
                 if (uploadResponse.code() == 401) {
-                    // The token is invalid, unregister all geo-fences and return.
+                    // The token is invalid, unregister all geo-fences, clear token cache and return.
                     location.deactivate(getApplicationContext(), null);
+                    new SharedPreferenceUserTokenCache(getApplicationContext()).clear();
                     return Result.failure();
                 }
                 return failureResult();
